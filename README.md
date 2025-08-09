@@ -8,28 +8,28 @@ Users can upload documents to create a knowledge base, chat with the assistant, 
 
 ## Repository Structure
 -----
-ai-assistant/
+ai-assistant
 │
-├── frontend/
-│   ├── public/
-│   ├── src/
+├── frontend
+│   ├── public
+│   ├── src
 │   ├── package.json
 │   └── README.md
 │
-├── backend/
-│   ├── api.py               # FastAPI app principal
-│   ├── embedding.py         # Funciones para chunking y embeddings
-│   ├── tools.py             # Funciones para integración con APIs (Strapi, etc)
-│   ├── db.py                # Funciones para conexión y queries a la DB
-│   ├── requirements.txt     # Dependencias Python
+├── backend
+│   ├── api.py
+│   ├── embedding.py
+│   ├── tools.py
+│   ├── db.py
+│   ├── requirements.txt
 │   └── README.md
 │
 ├── database/
-│   ├── data_ingestion.py    # Script para limpieza e ingreso de datos a la DB
+│   ├── data_ingestion.py
 │   └── README.md
 │
 ├── cms/
-│   ├── strapi_integration.py # Script o módulo para manejo de Strapi CMS
+│   ├── strapi_integration.py
 │   └── README.md
 │
 ├── docs/

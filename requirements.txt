@@ -1,0 +1,11 @@
+python-dotenv
+fastapi
+uvicorn
+langchain-openai
+langchain-chroma
+langchain-community
+pypdf
+pandas
+python-pptx
+python-docx
+uvicorn
