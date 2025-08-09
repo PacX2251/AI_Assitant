@@ -1,5 +1,6 @@
 # AI_Assitant
 Building an AI-powered assistant with Retrieval-Augmented Generation (RAG) and tools.
+Notion Link: https://www.notion.so/Mini-AI-Knowledge-Assistant-ActivaMente-Challenge-24a7dc188d0f80c78cd7d755eb03a3f5?source=copy_link
 
 ## Overview
 
@@ -7,6 +8,7 @@ This project is a Mini AI Assistant powered by Retrieval-Augmented Generation (R
 Users can upload documents to create a knowledge base, chat with the assistant, and perform external actions via API integrations.  
 
 ## Repository Structure
+´´´
 -----
 ai-assistant
 │
@@ -39,7 +41,7 @@ ai-assistant
 │
 └── README.md
 -----
-
+´´´
 - `frontend/`  
   React app for the chat interface and file uploads.
 
