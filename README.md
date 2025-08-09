@@ -8,8 +8,8 @@ This project is a Mini AI Assistant powered by Retrieval-Augmented Generation (R
 Users can upload documents to create a knowledge base, chat with the assistant, and perform external actions via API integrations.  
 
 ## Repository Structure
-´´´
------
+
+```
 ai-assistant
 │
 ├── frontend
@@ -26,22 +26,22 @@ ai-assistant
 │   ├── requirements.txt
 │   └── README.md
 │
-├── database/
+├── database
 │   ├── data_ingestion.py
 │   └── README.md
 │
-├── cms/
+├── cms
 │   ├── strapi_integration.py
 │   └── README.md
 │
-├── docs/
+├── docs
 │   ├── architecture_diagram.png
 │   ├── DEPLOY.md
 │   └── planning.md
 │
 └── README.md
+```
 -----
-´´´
 - `frontend/`  
   React app for the chat interface and file uploads.
 
