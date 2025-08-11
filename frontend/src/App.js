@@ -57,7 +57,6 @@ function App() {
         { id: prev.length + 1, from: "bot", text: `✅ Files processed: ${result.message}` },
       ]);
 
-      // 🆕 Guardar nombres de archivos subidos
       if (result.files) {
         setUploadedFiles(result.files);
       }
@@ -74,7 +73,7 @@ function App() {
 
   return (
     <div className="app-container">
-      {/* Sidebar siempre visible */}
+      {/* Sidebar */}
       <div className="sidebar">
         <h2>📤 Upload Files</h2>
         <input type="file" onChange={handleFileUpload} multiple />
@@ -88,7 +87,7 @@ function App() {
         </div>
       </div>
 
-      {/* Chat principal */}
+      {/* Chat */}
       <main className="chat-container">
         <div className="messages">
           {messages.map((msg) => (

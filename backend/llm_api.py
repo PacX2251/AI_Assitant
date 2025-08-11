@@ -131,7 +131,6 @@ User question:
     response = llm.invoke(prompt)
     bot_reply = response.content
 
-    # Guardar conversación en Scrapi
     save_conversation(message, bot_reply)
 
     return {"reply": bot_reply}

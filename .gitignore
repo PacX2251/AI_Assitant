@@ -11,6 +11,7 @@ __pycache__/
 build/
 develop-eggs/
 dist/
+chroma_db/
 downloads/
 eggs/
 .eggs/
@@ -205,3 +206,28 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# --- Strapi ---
+# Dependencias
+node_modules/
+
+# Archivos temporales y de build
+.cache/
+build/
+.tmp/
+
+# Subidas de archivos (opcional ignorarlas si no quieres versionar imágenes)
+public/uploads/
+
+# Archivos de entorno
+.env
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Directorios de bases de datos locales
+*.sqlite
+*.sqlite-journal
