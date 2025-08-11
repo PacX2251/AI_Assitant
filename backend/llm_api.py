@@ -40,11 +40,17 @@ async def upload_files(files: List[UploadFile] = File(...)):
     global vector_db
     docs = []
     temp_files = []
+    
+    if os.path.exists(VECTOR_DB_PATH):
+        shutil.rmtree(VECTOR_DB_PATH)
+    vector_db = None
 
     try:
+        uploaded_filenames = []  # para devolver al frontend
         for file in files:
-            filename = file.filename.lower()
-            suffix = os.path.splitext(filename)[1]
+            filename = file.filename
+            uploaded_filenames.append(filename)
+            suffix = os.path.splitext(filename.lower())[1]
 
             if suffix == ".txt":
                 loader = TextLoader(file.file)
@@ -67,7 +73,7 @@ async def upload_files(files: List[UploadFile] = File(...)):
                 continue
 
         if not docs:
-            return {"message": "No supported files uploaded."}
+            return {"message": "No supported files uploaded.", "files": []}
 
         splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         chunks = splitter.split_documents(docs)
@@ -75,9 +81,8 @@ async def upload_files(files: List[UploadFile] = File(...)):
         embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
         vector_db = Chroma.from_documents(chunks, embeddings, persist_directory=VECTOR_DB_PATH)
 
-        return {"message": f"Uploaded and processed {len(files)} file(s)."}
+        return {"message": f"Uploaded and processed {len(files)} file(s).", "files": uploaded_filenames}
     finally:
-        # Borra archivos temporales
         for path in temp_files:
             try:
                 os.remove(path)

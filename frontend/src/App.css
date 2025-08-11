@@ -117,6 +117,21 @@ body, html {
 .input-area button:hover {
   background: #3a9cd4;
 }
+.uploaded-files {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.uploaded-files ul {
+  list-style: none;
+  padding-left: 10px;
+}
+
+.uploaded-files li::before {
+  content: "• ";
+  color: #4cafef;
+}
 
 
 /* Animaciones */

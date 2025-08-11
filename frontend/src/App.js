@@ -6,6 +6,7 @@ function App() {
     { id: 1, from: "bot", text: "👋 Hi! Upload one or more files or type a message to start." },
   ]);
   const [input, setInput] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState([]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -55,6 +56,11 @@ function App() {
         ...prev,
         { id: prev.length + 1, from: "bot", text: `✅ Files processed: ${result.message}` },
       ]);
+
+      // 🆕 Guardar nombres de archivos subidos
+      if (result.files) {
+        setUploadedFiles(result.files);
+      }
     } catch (error) {
       console.error("File upload error:", error);
       setMessages((prev) => [
@@ -72,6 +78,14 @@ function App() {
       <div className="sidebar">
         <h2>📤 Upload Files</h2>
         <input type="file" onChange={handleFileUpload} multiple />
+        <div className="uploaded-files">
+          {uploadedFiles.length > 0 && <h3>📄 Files Loaded:</h3>}
+          <ul>
+            {uploadedFiles.map((name, idx) => (
+              <li key={idx}>{name}</li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       {/* Chat principal */}
