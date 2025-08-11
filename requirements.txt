@@ -8,5 +8,4 @@ pypdf
 pandas
 python-pptx
 python-docx
-uvicorn
 python-multipart
