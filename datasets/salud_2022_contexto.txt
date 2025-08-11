@@ -1,0 +1,3 @@
+Este archivo CSV contiene datos de salud del año 2022 en varios países latinoamericanos. 
+Incluye el número de incidencias y mortalidad de algunas enfermedades comunes como gripe, diabetes, COVID-19, hipertensión y cáncer.
+Los datos provienen de informes oficiales de los ministerios de salud de cada país.

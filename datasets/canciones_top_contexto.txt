@@ -1,0 +1,2 @@
+Este archivo CSV presenta las canciones más populares del año 2023, incluyendo información sobre el artista, álbum, duración en segundos y género musical. 
+La selección está basada en listas de éxitos internacionales y plataformas de streaming.

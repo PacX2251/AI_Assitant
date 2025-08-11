@@ -1,0 +1,3 @@
+Este archivo CSV contiene datos de ventas de videojuegos destacados en el año 2023.
+Incluye el título, plataforma principal, ventas en millones de unidades y género.
+Los datos están basados en reportes de la industria y análisis de mercado.

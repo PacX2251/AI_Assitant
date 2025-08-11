@@ -1,91 +1,110 @@
-# backend/main.py
 import os
+import tempfile
+import shutil
 from dotenv import load_dotenv
-from typing import List
-from fastapi import FastAPI, UploadFile, Form
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-
-# LangChain imports
+from pydantic import BaseModel
+from typing import List
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_chroma import Chroma
-from langchain_community.document_loaders import (
-    TextLoader,
-    PyPDFLoader,
-    DirectoryLoader,
-    CSVLoader
-)
+from langchain_community.document_loaders import TextLoader, PyPDFLoader, CSVLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-# Load env vars
-load_dotenv(r"C:/assistant/.env")
+load_dotenv(r'C:/assistant/.env')
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Create FastAPI app
 app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=["*"],  # Cambiar en producción
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Global variables for vector DB and LLM
 VECTOR_DB_PATH = "./chroma_db"
-retriever = None
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, openai_api_key=OPENAI_API_KEY)
+vector_db = None
 
+class ChatRequest(BaseModel):
+    message: str
 
-# Function to process uploaded files and create embeddings
-def process_files_and_create_db(files_dir: str):
-    loaders = [
-        DirectoryLoader(files_dir, glob="**/*.txt", loader_cls=TextLoader),
-        DirectoryLoader(files_dir, glob="**/*.pdf", loader_cls=PyPDFLoader),
-        DirectoryLoader(files_dir, glob="**/*.csv", loader_cls=CSVLoader),
-    ]
+@app.post("/upload")
+async def upload_files(files: List[UploadFile] = File(...)):
+    global vector_db
+    docs = []
+    temp_files = []
 
-    all_docs = []
-    for loader in loaders:
-        try:
-            all_docs.extend(loader.load())
-        except Exception as e:
-            print(f"Could not load files: {e}")
+    try:
+        for file in files:
+            filename = file.filename.lower()
+            suffix = os.path.splitext(filename)[1]
 
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
-    chunks = text_splitter.split_documents(all_docs)
+            if suffix == ".txt":
+                # Para txt sí puedes pasar el stream directamente
+                loader = TextLoader(file.file)
+                docs.extend(loader.load())
 
-    embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
-    db = Chroma.from_documents(chunks, embedding=embeddings, persist_directory=VECTOR_DB_PATH)
-    return db.as_retriever(search_kwargs={"k": 5})
+            elif suffix in [".csv", ".pdf"]:
+                # Guardar archivo temporal para csv y pdf
+                with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+                    shutil.copyfileobj(file.file, tmp)
+                    tmp_path = tmp.name
+                    temp_files.append(tmp_path)
 
+                if suffix == ".csv":
+                    loader = CSVLoader(tmp_path)
+                elif suffix == ".pdf":
+                    loader = PyPDFLoader(tmp_path)
 
-@app.post("/upload_files")
-async def upload_files(files: List[UploadFile]):
-    os.makedirs("uploaded_files", exist_ok=True)
-    for file in files:
-        file_path = f"uploaded_files/{file.filename}"
-        with open(file_path, "wb") as f:
-            f.write(await file.read())
+                docs.extend(loader.load())
 
-    global retriever
-    retriever = process_files_and_create_db("uploaded_files")
+            else:
+                continue
 
-    return {"status": "Files processed and database updated"}
+        if not docs:
+            return {"message": "No supported files uploaded."}
 
+        splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        chunks = splitter.split_documents(docs)
+
+        embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
+        vector_db = Chroma.from_documents(chunks, embeddings, persist_directory=VECTOR_DB_PATH)
+
+        return {"message": f"Uploaded and processed {len(files)} file(s)."}
+    finally:
+        # Borra archivos temporales
+        for path in temp_files:
+            try:
+                os.remove(path)
+            except Exception:
+                pass
 
 @app.post("/chat")
-async def chat(message: str = Form(...)):
-    if retriever is None:
-        return {"error": "No documents uploaded yet."}
+async def chat(request: ChatRequest):
+    global vector_db
+    if not vector_db:
+        return {"reply": "Please upload documents first."}
 
-    docs = retriever.get_relevant_documents(message)
-    context = "\n\n".join([d.page_content for d in docs])
+    message = request.message
+    retriever = vector_db.as_retriever(search_kwargs={"k": 3})
+    context_docs = retriever.get_relevant_documents(message)
 
-    prompt = f"""You are an AI assistant. Use the following context to answer:
-    {context}
+    context = "\n".join([doc.page_content for doc in context_docs])
 
-    Question: {message}
-    Answer:"""
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.2, openai_api_key=OPENAI_API_KEY)
+    prompt = f"""
+You are a helpful assistant. Use the following context to answer the user's question.
+If the answer is not contained in the context, specify that the information is not contained in the context,
+but assume or infer the possible answer, clarifying that the answer is inferred.
+
+Context:
+{context}
+
+User question:
+{message}
+"""
 
     response = llm.invoke(prompt)
-    return {"response": response.content}
+
+    return {"reply": response.content}

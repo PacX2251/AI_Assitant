@@ -41,7 +41,6 @@ ai-assistant
 │
 └── README.md
 ```
------
 - `frontend/`  
   React app for the chat interface and file uploads.
 

@@ -1,141 +1,126 @@
-* {
-  box-sizing: border-box;
-}
-
-body, html, #root, .app-container {
-  height: 100%;
+/* General */
+body, html {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #121212;
-  color: #e0e0e0;
+  padding: 0;
+  height: 100%;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #1f1f2f;
+  color: #fff;
 }
 
+/* Contenedor principal: sidebar fijo a la izquierda + chat */
 .app-container {
   display: flex;
   height: 100vh;
   overflow: hidden;
-  position: relative;
 }
 
-.toggle-sidebar {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 1000;
-  background: #333;
-  color: #eee;
-  border: none;
-  padding: 10px 15px;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
+/* Sidebar fijo */
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: -280px;
   width: 280px;
-  height: 100%;
-  background: #1f1f1f;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.7);
+  background: #2c2c3e;
   padding: 20px;
-  transition: left 0.3s ease;
-  z-index: 999;
-}
-
-.sidebar.show {
-  left: 0;
-}
-
-.sidebar h2 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-weight: 700;
-  color: #00bcd4;
-}
-
-.chat-container {
-  flex: 1;
-  margin-left: 0;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.5);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 60px 20px 20px 20px;
-  transition: margin-left 0.3s ease;
+  flex-shrink: 0;
+}
+.sidebar h2 {
+  margin-top: 0;
+}
+.sidebar input[type="file"] {
+  margin-top: 10px;
+  cursor: pointer;
+  color: #ddd;
 }
 
-.sidebar.show ~ .chat-container {
-  margin-left: 280px;
+/* Chat ocupa el resto */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
+/* Mensajes: scroll */
 .messages {
-  flex-grow: 1;
+  flex: 1;
+  padding: 20px;
   overflow-y: auto;
-  padding-right: 10px;
-  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
+/* Mensajes tipo chat: user a la derecha, bot a la izquierda */
 .message {
   max-width: 70%;
-  padding: 12px 18px;
-  margin-bottom: 12px;
+  padding: 12px 16px;
   border-radius: 20px;
+  font-size: 15px;
   line-height: 1.4;
-  font-size: 1rem;
   word-wrap: break-word;
+  animation: fadeIn 0.2s ease-in-out;
+  display: inline-block;
+  white-space: pre-wrap;
 }
 
-.message.user {
-  background: #00bcd4;
-  color: #121212;
-  margin-left: auto;
-  border-bottom-right-radius: 5px;
-}
-
+/* Bot - alineado a la izquierda */
 .message.bot {
-  background: #333;
-  border: 1px solid #00bcd4;
-  border-bottom-left-radius: 5px;
+  background: #3c3c4e;
+  color: white;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
 }
 
+/* User - alineado a la derecha */
+.message.user {
+  background: #4cafef;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+/* Área de entrada */
 .input-area {
   display: flex;
-  margin-top: 15px;
+  padding: 12px;
+  background: #2c2c3e;
+  border-top: 1px solid #444;
 }
-
-input[type="text"] {
-  flex-grow: 1;
-  padding: 12px 15px;
-  border-radius: 20px;
+.input-area textarea {
+  flex: 1;
+  padding: 10px 12px;
   border: none;
+  border-radius: 6px;
   outline: none;
-  font-size: 1rem;
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical; /* que el usuario pueda cambiar el alto si quiere */
+  min-height: 50px;
+  max-height: 150px;
+  background-color: #3c3c4e;
+  color: white;
+  line-height: 1.4;
 }
 
-button {
-  margin-left: 12px;
-  background: #00bcd4;
+.input-area button {
+  margin-left: 10px;
+  background: #4cafef;
   border: none;
-  color: #121212;
-  font-weight: 600;
-  padding: 0 20px;
-  border-radius: 20px;
+  padding: 10px 16px;
+  color: white;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.3s;
+}
+.input-area button:hover {
+  background: #3a9cd4;
 }
 
-button:hover {
-  background: #0097a7;
-}
 
-@media (max-width: 600px) {
-  .sidebar {
-    width: 240px;
-  }
-  .sidebar.show ~ .chat-container {
-    margin-left: 240px;
-  }
-  .message {
-    max-width: 90%;
-  }
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
 }
