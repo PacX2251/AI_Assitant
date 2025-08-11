@@ -52,14 +52,14 @@ function App() {
       });
 
       const result = await response.json();
+
+      // Append new files to the existing list
+      setUploadedFiles((prev) => [...prev, ...result.files]);
+
       setMessages((prev) => [
         ...prev,
         { id: prev.length + 1, from: "bot", text: `✅ Files processed: ${result.message}` },
       ]);
-
-      if (result.files) {
-        setUploadedFiles(result.files);
-      }
     } catch (error) {
       console.error("File upload error:", error);
       setMessages((prev) => [
@@ -68,7 +68,7 @@ function App() {
       ]);
     }
 
-    e.target.value = null;
+    e.target.value = null; // Reset input so same file can be uploaded again if needed
   };
 
   return (
@@ -98,18 +98,18 @@ function App() {
         </div>
 
         <div className="input-area">
-         <textarea
+          <textarea
             placeholder="Type your message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
+              if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
                 handleSend();
-                }
+              }
             }}
             rows={3}
-            />
+          />
           <button onClick={handleSend}>Send</button>
         </div>
       </main>
