@@ -74,26 +74,7 @@ ai-assistant
 
 ## Getting Started
 
-### Frontend
-
-1. Navigate to `frontend/`  
-2. Run `npm install`  
-3. Run `npm start` to launch the UI locally.
-
-### Backend
-
-1. Navigate to `backend/`  
-2. Create and activate a Python virtual environment.  
-3. Run `pip install -r requirements.txt`  
-4. Run `uvicorn llm_api:app --reload` to start the API server.
-
-### Database
-
-- Use `database/data_ingestion.py` to ingest and prepare data for the vector store and PostgreSQL.
-
-## Deployment
-
-Please refer to `docs/DEPLOY.md` for deployment instructions.
+Please refer to `DEPLOY_LOCAL.md` for deployment instructions.
 
 ## Contact
 
